@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Selection Tournament</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .image-wrapper {
+            text-align: center;
+            margin: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .image-wrapper:hover {
+            transform: scale(1.05);
+        }
+        img {
+            max-width: 100%; /* Responsive image */
+            height: auto; /* Maintain aspect ratio */
+            border-radius: 10px;
+        }
+        .vs-text {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+        .ranking {
+            margin-top: 20px;
+            list-style-type: none;
+            padding: 0;
+            position: relative;
+            z-index: 1;
+        }
+        .winner-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.5;
+            z-index: 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="matchup" class="container">
+        <div class="image-wrapper" id="wrapper1">
+            <img id="image1" src="" alt="Image 1">
+            <p id="label1">Choice A</p>
+        </div>
+        <span class="vs-text">VS</span>
+        <div class="image-wrapper" id="wrapper2">
+            <img id="image2" src="" alt="Image 2">
+            <p id="label2">Choice B</p>
+        </div>
+    </div>
+    <div id="rankingContainer" style="position: relative;">
+        <div class="winner-background" id="winnerBackground"></div>
+        <ul id="ranking" class="ranking"></ul>
+    </div>
+
+    <script>
+        const options = [
+            { img: 'image1.png', label: 'karen(f4)' },
+            { img: 'image2.png', label: 'Sabrina'},
+            { img: 'image3.png', label: 'Yuki' },
+            { img: 'image4.png', label: 'Pinky' },
+            { img: 'image5.png', label: 'Yanki' },
+            { img: 'image6.png', label: 'yw' },
+            { img: 'image7.png', label: 'Tung' },
+            { img: 'image8.png', label: '連歡' },
+            { img: 'image9.png', label: '正方形面' },
+            { img: 'image10.png', label: 'lam lam' },
+            { img: 'image11.png', label: 'yty' },
+            { img: 'image12.png', label: '鄔海瑤' },
+            { img: 'image13.png', label: 'Karen(f5)' },
+        ];
+
+        let currentOptions = [];
+        let round = 0;
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function loadPair() {
+            if (currentOptions.length > 1) {
+                const option1 = currentOptions[0];
+                const option2 = currentOptions[1];
+
+                document.getElementById('image1').src = option1.img;
+                document.getElementById('label1').innerText = option1.label;
+                document.getElementById('image2').src = option2.img;
+                document.getElementById('label2').innerText = option2.label;
+            } else {
+                showWinner();
+            }
+        }
+
+        function showWinner() {
+            const rankingList = document.getElementById('ranking');
+            rankingList.innerHTML = '';
+
+            const winner = currentOptions[0].label;
+            const winningImage = currentOptions[0].img;
+
+            rankingList.innerHTML = `<li>Winner: ${winner}</li>`;
+            document.getElementById('matchup').style.display = 'none';
+        }
+
+        function selectWinner(winnerIndex) {
+            const winner = currentOptions[winnerIndex];
+            currentOptions = [winner];
+            round++;
+
+            if (round * 2 < options.length) {
+                currentOptions = currentOptions.concat(options.slice(round * 2, (round + 1) * 2));
+            }
+            loadPair();
+        }
+
+        document.getElementById('wrapper1').addEventListener('click', () => {
+            selectWinner(0);
+        });
+
+        document.getElementById('wrapper2').addEventListener('click', () => {
+            selectWinner(1);
+        });
+
+        // Shuffle options and load the first pair
+        shuffleArray(options);
+        currentOptions = options.slice(0, 2);
+        loadPair();
+    </script>
+</body>
+</html>
